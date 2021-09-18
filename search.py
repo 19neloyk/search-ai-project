@@ -13,6 +13,17 @@ by Pacman agents (in searchAgents.py).
 
 import util
 
+class Node:
+    def __init__(self, current_state, parent, action_to_curr, step_cost, path_cost):
+        self.state = current_state
+        self.parent = parent
+        self.action_to_curr = action_to_curr
+        self.step_cost = step_cost
+        self.path_cost = path_cost
+
+    def __hash__(self):
+        return self.state.__hash__()
+
 
 class SearchProblem:
     """
@@ -84,13 +95,48 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.Stack()
+    explored = set()
+    start_node = Node(problem.getStartState(), None, None, 1, 1)
+    frontier.push(start_node)
+    while not frontier.isEmpty():
+        curr = frontier.pop()
+        explored.add(curr.state)
+        if problem.isGoalState(curr.state):
+            path = []
+            while curr.action_to_curr:
+                path.append(curr.action_to_curr)
+                curr = curr.parent
+            print(len(path))
+            return path[::-1]
+        for successor, action, cost in problem.getSuccessors(curr.state):
+            successor_node = Node(successor, curr, action, 1, curr.path_cost + 1)
+            if successor not in explored:
+                frontier.push(successor_node)
+
 
 
 def breadthFirstSearch(problem):
     "Search the shallowest nodes in the search tree first. [p 74]"
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.Queue()
+    explored = set()
+    start_node = Node(problem.getStartState(), None, None, 1, 1)
+    frontier.push(start_node)
+    while not frontier.isEmpty():
+        curr = frontier.pop()
+        explored.add(curr.state)
+        if problem.isGoalState(curr.state):
+            path = []
+            while curr.action_to_curr:
+                path.append(curr.action_to_curr)
+                curr = curr.parent
+            print(len(path))
+            return path[::-1]
+        for successor, action, cost in problem.getSuccessors(curr.state):
+            successor_node = Node(successor, curr, action, 1, curr.path_cost + 1)
+            if successor not in explored:
+                frontier.push(successor_node)
 
 
 def uniformCostSearch(problem):
