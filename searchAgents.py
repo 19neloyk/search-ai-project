@@ -453,8 +453,12 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    # reached = set(position)
+    # unreached = set(foodGrid.asList())  # All foods
+    return len(foodGrid.asList())
+    #
+    # "*** YOUR CODE HERE ***"
+    #
 
 
 class ClosestDotSearchAgent(SearchAgent):
