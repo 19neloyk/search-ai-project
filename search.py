@@ -142,8 +142,30 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
+    frontier = util.PriorityQueue()
+    explored = set()
+    start_node = Node(problem.getStartState(), None, None, 1, 1)
+    frontier.push(start_node, 0)
+    while not frontier.isEmpty():
+        curr = frontier.pop()
+        explored.add(curr.state)
+        if problem.isGoalState(curr.state):
+            path = []
+            while curr.action_to_curr:
+                path.append(curr.action_to_curr)
+                curr = curr.parent
+            print(len(path))
+            return path[::-1]
+        for successor, action, cost in problem.getSuccessors(curr.state):
+            successor_node = Node(successor, curr, action, 1, curr.path_cost + 1)
+            if successor not in explored:
+                # Don't have to check if it is in frontier as the lowest one will
+                # always be visited first. When the higher successor_node is visited
+                # it won't make a difference as none of its children will be pushed
+                # so this is equivalent to removing the higher successor_node and
+                # replacing it with the lower node.
+                frontier.push(successor_node, curr.path_cost + 1)
+    return []
 
 def nullHeuristic(state, problem=None):
     """
@@ -152,11 +174,35 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue()
+    explored = set()
+    start_node = Node(problem.getStartState(), None, None, 1, 1)
+    frontier.push(start_node, 0 +
+                  heuristic(start_node.state, problem=problem))
+    while not frontier.isEmpty():
+        curr = frontier.pop()
+        explored.add(curr.state)
+        if problem.isGoalState(curr.state):
+            path = []
+            while curr.action_to_curr:
+                path.append(curr.action_to_curr)
+                curr = curr.parent
+            print(len(path))
+            return path[::-1]
+        for successor, action, cost in problem.getSuccessors(curr.state):
+            successor_node = Node(successor, curr, action, 1, curr.path_cost + 1)
+            if successor not in explored:
+                # Don't have to check if it is in frontier as the lowest one will
+                # always be visited first. When the higher successor_node is visited
+                # it won't make a difference as none of its children will be pushed
+                # so this is equivalent to removing the higher successor_node and
+                # replacing it with the lower node.
+                frontier.push(successor_node, curr.path_cost + 1 +
+                              heuristic(successor_node.state, problem=problem))
+    return []
 
 
 # Abbreviations
