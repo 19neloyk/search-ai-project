@@ -453,9 +453,24 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    # reached = set(position)
-    # unreached = set(foodGrid.asList())  # All foods
-    return len(foodGrid.asList())
+    reached = set()
+    reached.add(position) # Start at pacman
+    unreached = set(foodGrid.asList())  # All foods
+    mst = 0
+    while unreached:
+        for food in [position] + [i for i in foodGrid.asList()]:
+            if food in reached:
+                continue
+            if food not in problem.heuristicInfo:
+                problem.heuristicInfo[food] = sorted([(mazeDistance(food, food2, problem.startingGameState), food2)
+                                                      for food2 in foodGrid.asList()])
+            for cost, nearest_food in problem.heuristicInfo[food]:
+                if nearest_food in unreached:
+                    mst += cost
+                    unreached.remove(nearest_food)
+                    reached.add(nearest_food)
+                    break
+    return mst
     #
     # "*** YOUR CODE HERE ***"
     #
